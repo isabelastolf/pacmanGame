@@ -15,6 +15,7 @@ let wallSpaceWidth = oneBlockSize / 1.75;
 let wallOffset = (oneBlockSize - wallSpaceWidth) / 2;
 let wallInnerColor = "black";
 let foodColor = "#FEB897";
+let score = 0;
 
 const DIRECTION_RIGHT = 4;
 const DIRECTION_UP = 3;
@@ -25,7 +26,7 @@ let map = [
   [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
   [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1],
   [1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1],
-  [1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 0, 1],
+  [1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1],
   [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1],
 
   [1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1],
@@ -34,7 +35,7 @@ let map = [
   [0, 0, 0, 0, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 1, 2, 1, 0, 0, 0, 0],
   [1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 2, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1],
 
-  [2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 1],
+  [1, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 1],
   [1, 1, 1, 1, 1, 2, 1, 2, 1, 2, 2, 2, 1, 2, 1, 2, 1, 1, 1, 1, 1],
   [0, 0, 0, 0, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 2, 1, 0, 0, 0, 0],
   [0, 0, 0, 0, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 1, 2, 1, 0, 0, 0, 0],
@@ -57,9 +58,8 @@ let gameLoop = () => {
 };
 
 let update = () => {
-  //a fazer
-
   pacman.moveProcess();
+  pacman.eat();
 };
 
 let drawFoods = () => {
@@ -67,10 +67,10 @@ let drawFoods = () => {
     for (let j = 0; j < map[0].length; j++) {
       if (map[i][j] == 2) {
         createRect(
-          j * oneBlockSize + oneBlockSize / 3,
-          i * oneBlockSize + oneBlockSize / 3,
-          oneBlockSize / 3,
-          oneBlockSize / 3,
+          j * oneBlockSize + oneBlockSize / 8,
+          i * oneBlockSize + oneBlockSize / 8,
+          oneBlockSize / 8,
+          oneBlockSize / 8,
           foodColor
         );
       }
@@ -78,11 +78,22 @@ let drawFoods = () => {
   }
 };
 
+let drawScore = () => {
+  canvasContext.font = "30px Silkscreen";
+  canvasContext.fillStyle = "white";
+  canvasContext.fillText(
+    "Score: " + score,
+    0,
+    oneBlockSize * (map.length + 1) + 8
+  );
+};
+
 let draw = () => {
   createRect(0, 0, canvas.width, canvas.height, "black");
   drawWalls();
   drawFoods();
   pacman.draw();
+  drawScore();
 };
 
 let gameInterval = setInterval(gameLoop, 1000 / fps);
