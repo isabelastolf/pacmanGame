@@ -8,22 +8,24 @@ let createRect = (x, y, width, height, color) => {
   canvasContext.fillRect(x, y, width, height);
 };
 
+const DIRECTION_RIGHT = 4;
+const DIRECTION_UP = 3;
+const DIRECTION_LEFT = 2;
+const DIRECTION_BOTTOM = 1;
+
 let fps = 30;
 let oneBlockSize = 20;
 let wallColor = "#342DCA";
 let wallSpaceWidth = oneBlockSize / 1.75;
 let wallOffset = (oneBlockSize - wallSpaceWidth) / 2;
 let wallInnerColor = "black";
+
 let foodColor = "#FEB897";
 let score = 0;
+
+let lives = 3;
 let ghosts = [];
 let ghostCount = 4;
-
-const DIRECTION_RIGHT = 4;
-const DIRECTION_UP = 3;
-const DIRECTION_LEFT = 2;
-const DIRECTION_BOTTOM = 1;
-
 let ghostLocations = [
   {x:0, y:0},
   {x:175, y:0},
@@ -66,9 +68,29 @@ let gameLoop = () => {
   draw();
 };
 
+let gameInterval = setInterval(gameLoop, 1000/fps);
+
+let restartPacmanAndGhosts = () => {
+  createNewPacman();
+  createGhosts();
+}
+
+
+let onGhostCollision = () => {
+  lives --;
+  restartPacmanAndGhosts();
+  if (lives == 0) {
+    document.write('End Game');
+  }
+}
+
 let update = () => {
   pacman.moveProcess();
   pacman.eat();
+  //updateGhosts();
+  if (pacman.checkGhostCollision(ghosts)) {
+    onGhostCollision();
+  }
 };
 
 let drawFoods = () => {
